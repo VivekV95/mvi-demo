@@ -29,12 +29,14 @@ class MainFragment: Fragment() {
         viewModel = activity?.run {
             ViewModelProvider(this).get(MainViewModel::class.java)
         }?: throw Exception("Invalid Activity")
+
+        subscribeObservers()
     }
 
     fun subscribeObservers() {
         viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
 
-            Log.d("Test", "Debug: DataState: $dataState" )
+            Log.d("Test", "Inside dataState Observer: $dataState" )
 
             dataState.blogPosts?.let {blogPosts ->
                 viewModel.setBlogListData(blogPosts)
@@ -47,11 +49,11 @@ class MainFragment: Fragment() {
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer {viewState ->
             viewState.blogPosts?.let {
-                Log.d("Test", "Debug: Setting Blod posts to RV: $it" )
+                Log.d("Test", "Inside viewState Observer, setting Blog posts to RV: $it" )
             }
 
             viewState.user?.let {
-                Log.d("Test", "Debug: Setting user data: $it" )
+                Log.d("Test", "Inside viewState Obersver, setting user data: $it" )
             }
         })
     }
@@ -71,10 +73,12 @@ class MainFragment: Fragment() {
     }
 
     private fun triggerGetBlogsEvent() {
+        Log.d("Test", "triggerGetBlogsEvent() called, changing MainStateEvent")
         viewModel.setStateEvent(MainStateEvent.GetBlogPostsEvent())
     }
 
     private fun triggerGetUserEvent() {
+        Log.d("Test", "triggerGetUserEventCalled() called, changing MainStateEvent")
         viewModel.setStateEvent(MainStateEvent.GetUserEvent("1"))
     }
 }
