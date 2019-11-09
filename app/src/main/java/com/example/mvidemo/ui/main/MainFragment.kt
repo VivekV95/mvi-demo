@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.mvidemo.R
 import com.example.mvidemo.model.BlogPost
+import com.example.mvidemo.model.User
 import com.example.mvidemo.ui.DataStateListener
 import com.example.mvidemo.ui.main.state.MainStateEvent
 import com.example.mvidemo.util.TopSpacingItemDecoration
@@ -60,7 +62,18 @@ class MainFragment: Fragment(), BlogListAdapter.Interaction {
         }
     }
 
-    fun subscribeObservers() {
+    private fun setUserProperties(user: User) {
+        email.text = user.email
+        username.text = user.username
+
+        view?.let {
+            Glide.with(it.context)
+                .load(user.image)
+                .into(image)
+        }
+    }
+
+    private fun subscribeObservers() {
         viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
 
             Log.d("Test", "Inside dataState Observer: $dataState" )
@@ -87,8 +100,9 @@ class MainFragment: Fragment(), BlogListAdapter.Interaction {
                 blogListAdapter.submitList(blogList)
             }
 
-            viewState.user?.let {
-                Log.d("Test", "Inside viewState Obersver, setting user data: $it" )
+            viewState.user?.let {user ->
+                Log.d("Test", "Inside viewState Obersver, setting user data: $user" )
+                setUserProperties(user)
             }
         })
     }
