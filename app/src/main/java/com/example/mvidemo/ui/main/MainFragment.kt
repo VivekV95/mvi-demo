@@ -4,20 +4,30 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mvidemo.R
+import com.example.mvidemo.model.BlogPost
 import com.example.mvidemo.ui.DataStateListener
 import com.example.mvidemo.ui.main.state.MainStateEvent
+import kotlinx.android.synthetic.main.fragment_main.*
 import java.lang.ClassCastException
 import java.lang.Exception
 
-class MainFragment: Fragment() {
+class MainFragment: Fragment(), BlogListAdapter.Interaction {
 
-    lateinit var viewModel: MainViewModel
+    override fun onItemSelected(position: Int, item: BlogPost) {
+        Toast.makeText(activity, item.body, Toast.LENGTH_SHORT).show()
+    }
 
-    lateinit var dataStateListener: DataStateListener
+    private lateinit var viewModel: MainViewModel
+
+    private lateinit var dataStateListener: DataStateListener
+
+    private lateinit var blogListAdapter: BlogListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +46,14 @@ class MainFragment: Fragment() {
         }?: throw Exception("Invalid Activity")
 
         subscribeObservers()
+    }
+
+    private fun initRecyclerView() {
+        recycler_view.apply {
+            layoutManager = LinearLayoutManager(activity)
+            blogListAdapter = BlogListAdapter(this@MainFragment)
+            adapter = blogListAdapter
+        }
     }
 
     fun subscribeObservers() {
