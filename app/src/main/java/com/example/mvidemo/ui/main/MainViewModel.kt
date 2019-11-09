@@ -11,6 +11,7 @@ import com.example.mvidemo.repository.Repository
 import com.example.mvidemo.ui.main.state.MainStateEvent
 import com.example.mvidemo.ui.main.state.MainViewState
 import com.example.mvidemo.util.AbsentLiveData
+import com.example.mvidemo.util.DataState
 
 class MainViewModel() : ViewModel() {
 
@@ -20,7 +21,7 @@ class MainViewModel() : ViewModel() {
     val viewState: LiveData<MainViewState>
         get() = _viewState
 
-    val dataState: LiveData<MainViewState> =
+    val dataState: LiveData<DataState<MainViewState>> =
         Transformations
             .switchMap(_stateEvent) { stateEvent ->
                 stateEvent?.let {
@@ -29,7 +30,7 @@ class MainViewModel() : ViewModel() {
                 }
             }
 
-    fun handleStateEvent(stateEvent: MainStateEvent): LiveData<MainViewState> =
+    fun handleStateEvent(stateEvent: MainStateEvent): LiveData<DataState<MainViewState>> =
         when (stateEvent) {
             is MainStateEvent.GetBlogPostsEvent -> {
                 Log.d("Test", "Inside handleStateEvent(), getting blog posts")

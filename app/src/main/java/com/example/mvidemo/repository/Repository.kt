@@ -7,48 +7,53 @@ import com.example.mvidemo.ui.main.state.MainViewState
 import com.example.mvidemo.util.ApiEmptyResponse
 import com.example.mvidemo.util.ApiErrorResponse
 import com.example.mvidemo.util.ApiSuccessResponse
+import com.example.mvidemo.util.DataState
 
 object Repository {
 
-    fun getBlogPosts(): LiveData<MainViewState> =
+    fun getBlogPosts(): LiveData<DataState<MainViewState>> =
         Transformations.switchMap(RetrofitInstance.apiService.getBlogPosts()) { apiResponse ->
-            object : LiveData<MainViewState>() {
+            object : LiveData<DataState<MainViewState>>() {
                 override fun onActive() {
                     super.onActive()
                     when (apiResponse) {
                         is ApiSuccessResponse -> {
-                            value = MainViewState(
-                                blogPosts = apiResponse.body
+                            value = DataState.data(
+                                message = null,
+                                data = MainViewState(apiResponse.body)
                             )
                         }
                         is ApiErrorResponse -> {
-                            value = MainViewState()
+                            value = DataState.error(message = apiResponse.errorMessage)
                         }
                         is ApiEmptyResponse -> {
-                            value = MainViewState()
+                            value = DataState.error("Returned nothing")
                         }
                     }
                 }
             }
         }
 
-    fun getUser(userId: String): LiveData<MainViewState> =
+    fun getUser(userId: String): LiveData<DataState<MainViewState>> =
         Transformations.switchMap(RetrofitInstance.apiService.getUser(userId)) { apiResponse ->
-            object : LiveData<MainViewState>() {
+            object : LiveData<DataState<MainViewState>>() {
                 override fun onActive() {
                     super.onActive()
                     when (apiResponse) {
                         is ApiSuccessResponse -> {
-                            value = MainViewState(
-                                user = apiResponse.body
+                            value = DataState.data(
+                                null,
+                                MainViewState(
+                                    user = apiResponse.body
+                                )
                             )
                         }
 
                         is ApiErrorResponse -> {
-                            value = MainViewState()
+                            value = DataState.error(apiResponse.errorMessage)
                         }
                         is ApiEmptyResponse -> {
-                            value = MainViewState()
+                            value = DataState.error("Returned nothing")
                         }
                     }
                 }
