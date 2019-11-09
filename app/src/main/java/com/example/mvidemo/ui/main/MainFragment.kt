@@ -38,12 +38,22 @@ class MainFragment: Fragment() {
 
             Log.d("Test", "Inside dataState Observer: $dataState" )
 
-            dataState.blogPosts?.let {blogPosts ->
-                viewModel.setBlogListData(blogPosts)
+            dataState.data?.let {mainViewState ->
+                mainViewState.blogPosts?.let {blogPosts ->
+                    viewModel.setBlogListData(blogPosts)
+                }
+
+                mainViewState.user?.let {user ->
+                    viewModel.setUser(user)
+                }
             }
 
-            dataState.user?.let {user ->
-                viewModel.setUser(user)
+            dataState.message?.let {
+
+            }
+
+            dataState.loading.let {
+                
             }
         })
 
