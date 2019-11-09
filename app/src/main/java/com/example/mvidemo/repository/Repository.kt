@@ -1,62 +1,41 @@
 package com.example.mvidemo.repository
 
+import android.net.Network
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.example.mvidemo.api.RetrofitInstance
+import com.example.mvidemo.model.BlogPost
+import com.example.mvidemo.model.User
 import com.example.mvidemo.ui.main.state.MainViewState
-import com.example.mvidemo.util.ApiEmptyResponse
-import com.example.mvidemo.util.ApiErrorResponse
 import com.example.mvidemo.util.ApiSuccessResponse
 import com.example.mvidemo.util.DataState
+import com.example.mvidemo.util.GenericApiResponse
+import java.util.*
 
 object Repository {
 
-    fun getBlogPosts(): LiveData<DataState<MainViewState>> =
-        Transformations.switchMap(RetrofitInstance.apiService.getBlogPosts()) { apiResponse ->
-            object : LiveData<DataState<MainViewState>>() {
-                override fun onActive() {
-                    super.onActive()
-                    when (apiResponse) {
-                        is ApiSuccessResponse -> {
-                            value = DataState.data(
-                                message = null,
-                                data = MainViewState(apiResponse.body)
-                            )
-                        }
-                        is ApiErrorResponse -> {
-                            value = DataState.error(message = apiResponse.errorMessage)
-                        }
-                        is ApiEmptyResponse -> {
-                            value = DataState.error("Returned nothing")
-                        }
-                    }
-                }
+    fun getBlogPosts(): LiveData<DataState<MainViewState>> {
+        return object : NetworkBoundResource<List<BlogPost>, MainViewState>() {
+            override fun handleApiSuccessResponse(response: ApiSuccessResponse<List<BlogPost>>) {
+                result.value = DataState.data(data = MainViewState(blogPosts = response.body))
             }
-        }
 
-    fun getUser(userId: String): LiveData<DataState<MainViewState>> =
-        Transformations.switchMap(RetrofitInstance.apiService.getUser(userId)) { apiResponse ->
-            object : LiveData<DataState<MainViewState>>() {
-                override fun onActive() {
-                    super.onActive()
-                    when (apiResponse) {
-                        is ApiSuccessResponse -> {
-                            value = DataState.data(
-                                null,
-                                MainViewState(
-                                    user = apiResponse.body
-                                )
-                            )
-                        }
-
-                        is ApiErrorResponse -> {
-                            value = DataState.error(apiResponse.errorMessage)
-                        }
-                        is ApiEmptyResponse -> {
-                            value = DataState.error("Returned nothing")
-                        }
-                    }
-                }
+            override fun createCall(): LiveData<GenericApiResponse<List<BlogPost>>> {
+                return RetrofitInstance.apiService.getBlogPosts()
             }
-        }
+
+        }.asLiveData()
+    }
+
+    fun getUser(userId: String): LiveData<DataState<MainViewState>> {
+        return object : NetworkBoundResource<User, MainViewState>() {
+            override fun handleApiSuccessResponse(response: ApiSuccessResponse<User>) {
+                result.value = DataState.data(data = MainViewState(user = response.body))
+            }
+
+            override fun createCall(): LiveData<GenericApiResponse<User>> {
+                return RetrofitInstance.apiService.getUser(userId)
+            }
+
+        }.asLiveData()
+    }
 }
