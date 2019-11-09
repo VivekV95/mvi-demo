@@ -13,6 +13,7 @@ import com.example.mvidemo.R
 import com.example.mvidemo.model.BlogPost
 import com.example.mvidemo.ui.DataStateListener
 import com.example.mvidemo.ui.main.state.MainStateEvent
+import com.example.mvidemo.util.TopSpacingItemDecoration
 import kotlinx.android.synthetic.main.fragment_main.*
 import java.lang.ClassCastException
 import java.lang.Exception
@@ -46,11 +47,14 @@ class MainFragment: Fragment(), BlogListAdapter.Interaction {
         }?: throw Exception("Invalid Activity")
 
         subscribeObservers()
+        initRecyclerView()
     }
 
     private fun initRecyclerView() {
         recycler_view.apply {
             layoutManager = LinearLayoutManager(activity)
+            val topSpacingItemDecoration = TopSpacingItemDecoration(30)
+            addItemDecoration(topSpacingItemDecoration)
             blogListAdapter = BlogListAdapter(this@MainFragment)
             adapter = blogListAdapter
         }
@@ -78,8 +82,9 @@ class MainFragment: Fragment(), BlogListAdapter.Interaction {
         })
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer {viewState ->
-            viewState.blogPosts?.let {
-                Log.d("Test", "Inside viewState Observer, setting Blog posts to RV: $it" )
+            viewState.blogPosts?.let {blogList ->
+                Log.d("Test", "Inside viewState Observer, setting Blog posts to RV: $blogList" )
+                blogListAdapter.submitList(blogList)
             }
 
             viewState.user?.let {
