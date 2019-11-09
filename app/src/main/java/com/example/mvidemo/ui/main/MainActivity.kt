@@ -21,8 +21,10 @@ class MainActivity : AppCompatActivity(), DataStateListener {
 
             showProgressBar(it.loading)
 
-            it.message?.let { message ->
-                showToast(message)
+            dataState.message?.let { event ->
+                event.getContentIfNotHandled()?.let {message ->
+                    showToast(message)
+                }
             }
         }
     }
@@ -37,7 +39,7 @@ class MainActivity : AppCompatActivity(), DataStateListener {
         showMainFragment()
     }
 
-    fun showMainFragment() {
+    private fun showMainFragment() {
         supportFragmentManager
             .beginTransaction()
             .replace(
@@ -47,11 +49,11 @@ class MainActivity : AppCompatActivity(), DataStateListener {
             .commit()
     }
 
-    fun showToast(message: String) {
+    private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    fun showProgressBar(isVisible: Boolean) {
+    private fun showProgressBar(isVisible: Boolean) {
         if (isVisible) progress_bar.visibility = View.VISIBLE
         else progress_bar.visibility = View.GONE
     }

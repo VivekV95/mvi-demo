@@ -9,7 +9,6 @@ import com.example.mvidemo.ui.main.state.MainViewState
 import com.example.mvidemo.util.ApiSuccessResponse
 import com.example.mvidemo.util.DataState
 import com.example.mvidemo.util.GenericApiResponse
-import java.util.*
 
 object Repository {
 

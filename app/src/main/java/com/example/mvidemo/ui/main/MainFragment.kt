@@ -45,13 +45,16 @@ class MainFragment: Fragment() {
 
             dataStateListener.onDataStateChanged(dataState)
 
-            dataState.data?.let {mainViewState ->
-                mainViewState.blogPosts?.let {blogPosts ->
-                    viewModel.setBlogListData(blogPosts)
-                }
+            dataState.data?.let {event ->
 
-                mainViewState.user?.let {user ->
-                    viewModel.setUser(user)
+                event.getContentIfNotHandled()?.let {mainViewState ->
+                    mainViewState.blogPosts?.let {blogPosts ->
+                        viewModel.setBlogListData(blogPosts)
+                    }
+
+                    mainViewState.user?.let {user ->
+                        viewModel.setUser(user)
+                    }
                 }
             }
         })
