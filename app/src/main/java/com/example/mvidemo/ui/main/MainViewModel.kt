@@ -8,29 +8,19 @@ import androidx.lifecycle.ViewModel
 import com.example.mvidemo.model.BlogPost
 import com.example.mvidemo.model.User
 import com.example.mvidemo.repository.Repository
+import com.example.mvidemo.ui.BaseViewModel
 import com.example.mvidemo.ui.main.state.MainStateEvent
 import com.example.mvidemo.ui.main.state.MainViewState
 import com.example.mvidemo.util.AbsentLiveData
 import com.example.mvidemo.util.DataState
 
-class MainViewModel() : ViewModel() {
+class MainViewModel : BaseViewModel<MainStateEvent, MainViewState>() {
 
-    private val _stateEvent: MutableLiveData<MainStateEvent> = MutableLiveData()
-    private val _viewState: MutableLiveData<MainViewState> = MutableLiveData()
+    override fun initNewViewState(): MainViewState {
+        return MainViewState()
+    }
 
-    val viewState: LiveData<MainViewState>
-        get() = _viewState
-
-    val dataState: LiveData<DataState<MainViewState>> =
-        Transformations
-            .switchMap(_stateEvent) { stateEvent ->
-                stateEvent?.let {
-                    Log.d("Test", "Inside dataState switchMap(), stateEvent has been changed")
-                    handleStateEvent(it)
-                }
-            }
-
-    fun handleStateEvent(stateEvent: MainStateEvent): LiveData<DataState<MainViewState>> =
+    override fun handleStateEvent(stateEvent: MainStateEvent): LiveData<DataState<MainViewState>> =
         when (stateEvent) {
             is MainStateEvent.GetBlogPostsEvent -> {
                 Log.d("Test", "Inside handleStateEvent(), getting blog posts")
@@ -57,17 +47,5 @@ class MainViewModel() : ViewModel() {
         val update = getCurrentViewStateOrNew()
         update.user = user
         _viewState.value = update
-    }
-
-    fun getCurrentViewStateOrNew(): MainViewState {
-        Log.d("Test", "Inside getCurrentViewStateOrNew()")
-        return viewState.value?.let {
-            it
-        }?: MainViewState()
-    }
-
-    fun setStateEvent(event: MainStateEvent) {
-        Log.d("Test", "Setting state event inside ViewModel")
-        _stateEvent.value = event
     }
 }

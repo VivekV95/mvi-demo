@@ -1,8 +1,7 @@
 package com.example.mvidemo.api
 
-import com.example.mvidemo.util.LiveDataCallAdapter
-import com.example.mvidemo.util.LiveDataCallAdapterFactory
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
@@ -13,7 +12,7 @@ object RetrofitInstance {
             .Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
     }
 

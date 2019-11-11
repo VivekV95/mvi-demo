@@ -20,7 +20,6 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType> {
         result.value = DataState.loading(true)
 
         GlobalScope.launch(IO) {
-            delay(2000)
 
             withContext(Main) {
                 val apiResponse = createCall()
@@ -34,7 +33,7 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType> {
         }
     }
 
-    private fun handleNetworkCall(response: GenericApiResponse<ResponseObject>) {
+    protected fun handleNetworkCall(response: GenericApiResponse<ResponseObject>) {
         when (response) {
             is ApiSuccessResponse -> {
                 handleApiSuccessResponse(response)
