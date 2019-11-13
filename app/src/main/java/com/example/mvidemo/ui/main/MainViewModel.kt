@@ -37,15 +37,13 @@ class MainViewModel : BaseViewModel<MainStateEvent, MainViewState>() {
 
     fun setBlogListData(blogPosts: List<BlogPost>) {
         Log.d("Test", "Inside setBlogListData(), changing viewState")
-        val update = getCurrentViewStateOrNew()
-        update.blogPosts = blogPosts
+        val update = getCurrentViewStateOrNew().copy(blogPosts = blogPosts)
         _viewState.value = update
     }
 
     fun setUser(user: User) {
         Log.d("Test", "Inside setUser(), changing viewState")
-        val update = getCurrentViewStateOrNew()
-        update.user = user
+        val update = getCurrentViewStateOrNew().copy(user = user)
         _viewState.value = update
     }
 }

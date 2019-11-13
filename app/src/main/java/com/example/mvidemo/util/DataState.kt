@@ -9,7 +9,7 @@ data class DataState<T>(
 
         fun <T> error(message: String): DataState<T> {
             return DataState(
-                message = Event(message),
+                message = Event.messageEvent(message),
                 loading = false,
                 data = null
             )

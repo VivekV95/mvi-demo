@@ -1,6 +1,7 @@
 package com.example.mvidemo.ui.main
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.mvidemo.R
+import com.example.mvidemo.TestActivity
 import com.example.mvidemo.model.BlogPost
 import com.example.mvidemo.model.User
 import com.example.mvidemo.ui.DataStateListener
@@ -50,6 +52,12 @@ class MainFragment: Fragment(), BlogListAdapter.Interaction {
 
         subscribeObservers()
         initRecyclerView()
+
+        test_button.setOnClickListener {
+            Intent(activity, TestActivity::class.java)
+                .apply { startActivity(this) }
+            activity!!.finish()
+        }
     }
 
     private fun initRecyclerView() {
@@ -123,7 +131,7 @@ class MainFragment: Fragment(), BlogListAdapter.Interaction {
 
     private fun triggerGetBlogsEvent() {
         Log.d("Test", "triggerGetBlogsEvent() called, changing MainStateEvent")
-        viewModel.setStateEvent(MainStateEvent.GetBlogPostsEvent())
+        viewModel.setStateEvent(MainStateEvent.GetBlogPostsEvent)
     }
 
     private fun triggerGetUserEvent() {

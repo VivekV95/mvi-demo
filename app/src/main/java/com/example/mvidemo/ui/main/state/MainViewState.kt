@@ -4,6 +4,6 @@ import com.example.mvidemo.model.BlogPost
 import com.example.mvidemo.model.User
 
 data class MainViewState(
-    var blogPosts: List<BlogPost>? = null,
-    var user: User? = null
+    val blogPosts: List<BlogPost>? = null,
+    val user: User? = null
 )
